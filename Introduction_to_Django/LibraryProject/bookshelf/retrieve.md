@@ -5,4 +5,5 @@
 ```python
 
 from bookshelf.models import Book
-Book.objects.all().values()
+book = Book.objects.get(title="1984")
+book.title, book.author, book.publication_year
