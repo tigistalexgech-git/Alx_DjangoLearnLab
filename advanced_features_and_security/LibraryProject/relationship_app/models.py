@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.conf import settings
 from django.contrib.auth import get_user_model
 
+
 User = get_user_model()
 
 ROLE_CHOICES = (
@@ -12,21 +13,22 @@ ROLE_CHOICES = (
     ('Editor', 'Editor'),
 )
 
-class Member(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    joined_at = models.DateField(auto_now_add=True)
 
-    class Meta:
-        permissions = [
-            ("can_view", "Can view member"),
-            ("can_create", "Can create member"),
-            ("can_edit", "Can edit member"),
-            ("can_delete", "Can delete member"),
-        ]
+class UserProfile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default='Member'
+    )
 
     def __str__(self):
-        return self.name
+        # email is safer than username (since username is removed)
+        return f"{self.user.email} - {self.role}"
+
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
@@ -75,22 +77,19 @@ class Librarian(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
+    ROLE_CHOICES = (
+        ('Admin', 'Admin'),
+        ('Librarian', 'Librarian'),
+        ('Member', 'Member'),
     )
-    role = models.CharField(
-        max_length=20,
-        choices=ROLE_CHOICES,
-        default='Member'
-    )
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='Member')
 
     def __str__(self):
-        # email is safer than username (since username is removed)
-        return f"{self.user.email} - {self.role}"
-
-User = get_user_model()
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
+        return f"{self.user.username} - {self.role}"
+    
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            UserProfile.objects.create(user=instance)

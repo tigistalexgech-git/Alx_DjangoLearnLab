@@ -23,33 +23,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-x3jmf&$d)3r()efg(asc@2nq0v_g-9$l&pmw!zsz(mrba7!x9$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-
-#Prevent browser XSS attacks
-SECURE_BROWSER_XSS_FILTER = True
-
-# Prevent MIME-type sniffing
-SECURE_CONTENT_TYPE_NOSNIFF = True
-
-# Prevent clickjacking
-X_FRAME_OPTIONS = 'DENY'
- 
-# Cookies only sent over HTTPS
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-
-# Use HTTPS for CSRF cookies
-CSRF_COOKIE_HTTPONLY = True
-SESSION_COOKIE_HTTPONLY = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-ALLOWED_HOSTS = []
+
 # Application definition
 
 INSTALLED_APPS = [

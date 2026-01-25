@@ -7,9 +7,6 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import user_passes_test
-from django.http import HttpResponse
-from .models import Member
-
 
 # Function-based view to list all books
 def list_books(request):
@@ -96,19 +93,3 @@ def delete_book(request, pk):
         return redirect('list_books')
 
     return render(request, 'relationship_app/delete_book.html', {'book': book})
-
-@permission_required('relationship_app.can_view', raise_exception=True)
-def view_members(request):
-    return HttpResponse("You can view members.")
-
-@permission_required('relationship_app.can_create', raise_exception=True)
-def create_member(request):
-    return HttpResponse("You can create a member.")
-
-@permission_required('relationship_app.can_edit', raise_exception=True)
-def edit_member(request):
-    return HttpResponse("You can edit a member.")
-
-@permission_required('relationship_app.can_delete', raise_exception=True)
-def delete_member(request):
-    return HttpResponse("You can delete a member.")
