@@ -14,20 +14,20 @@ ROLE_CHOICES = (
 )
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
-    role = models.CharField(
-        max_length=20,
-        choices=ROLE_CHOICES,
-        default='Member'
-    )
+# class UserProfile(models.Model):
+#     user = models.OneToOneField(
+#         settings.AUTH_USER_MODEL,
+#         on_delete=models.CASCADE
+#     )
+#     role = models.CharField(
+#         max_length=20,
+#         choices=ROLE_CHOICES,
+#         default='Member'
+#     )
 
-    def __str__(self):
-        # email is safer than username (since username is removed)
-        return f"{self.user.email} - {self.role}"
+#     def __str__(self):
+#         # email is safer than username (since username is removed)
+#         return f"{self.user.email} - {self.role}"
 
 
 class Author(models.Model):
