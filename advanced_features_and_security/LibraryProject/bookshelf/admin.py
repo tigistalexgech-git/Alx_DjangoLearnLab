@@ -4,6 +4,7 @@ from .models import CustomUser
 from django.contrib.auth.admin import UserAdmin
 
 
+
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
     list_display = ("title", "author", "publication_year")
