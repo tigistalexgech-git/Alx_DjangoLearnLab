@@ -6,6 +6,7 @@ from django import forms
 from .forms import ArticleForm
 from .models import Book
 from .forms import BookForm
+from .forms import ExampleForm
 
 @permission_required('bookshelf.can_view', raise_exception=True)
 def article_list(request):
@@ -45,13 +46,6 @@ def article_delete(request, pk):
         return redirect('article_list')
     return render(request, 'bookshelf/article_confirm_delete.html', {'article': article})
 
-@permission_required('bookshelf.can_view', raise_exception=True)
-def book_list(request):
-    """
-    Displays a list of all books (or articles) that the user has permission to view.
-    """
-    books = Article.objects.all()  # Replace Article with Book if needed
-    return render(request, 'bookshelf/book_list.html', {'books': books})
 
 @permission_required('bookshelf.can_view', raise_exception=True)
 def book_list(request):
@@ -63,15 +57,16 @@ def book_list(request):
 
 
 @permission_required('bookshelf.can_create', raise_exception=True)
-def book_create(request):
+def form_example(request):
     """
-    Secure form handling with validation
+    Secure form handling with CSRF and validation
     """
     if request.method == "POST":
-        form = BookForm(request.POST)
-        if form.is_valid():   # Input validation
+        form = ExampleForm(request.POST)
+        if form.is_valid():
             form.save()
+            return redirect('book_list')
     else:
-        form = BookForm()
+        form = ExampleForm()
 
     return render(request, 'bookshelf/form_example.html', {'form': form})
