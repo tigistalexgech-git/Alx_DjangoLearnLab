@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import permission_required
 from .models import Article
 from django import forms
 from .forms import ArticleForm
+from .models import Book
+from .forms import BookForm
 
 @permission_required('bookshelf.can_view', raise_exception=True)
 def article_list(request):
@@ -50,3 +52,26 @@ def book_list(request):
     """
     books = Article.objects.all()  # Replace Article with Book if needed
     return render(request, 'bookshelf/book_list.html', {'books': books})
+
+@permission_required('bookshelf.can_view', raise_exception=True)
+def book_list(request):
+    """
+    Secure list view using Django ORM (prevents SQL injection)
+    """
+    books = Book.objects.all()  # ORM auto-escapes SQL
+    return render(request, 'bookshelf/book_list.html', {'books': books})
+
+
+@permission_required('bookshelf.can_create', raise_exception=True)
+def book_create(request):
+    """
+    Secure form handling with validation
+    """
+    if request.method == "POST":
+        form = BookForm(request.POST)
+        if form.is_valid():   # Input validation
+            form.save()
+    else:
+        form = BookForm()
+
+    return render(request, 'bookshelf/form_example.html', {'form': form})
