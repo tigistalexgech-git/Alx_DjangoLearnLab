@@ -1,0 +1,9 @@
+<!-- book_list.html -->
+<h1>Books</h1>
+<ul>
+  {% for book in books %}
+    <li>{{ book.title }}</li>
+  {% empty %}
+    <li>No books available.</li>
+  {% endfor %}
+</ul>

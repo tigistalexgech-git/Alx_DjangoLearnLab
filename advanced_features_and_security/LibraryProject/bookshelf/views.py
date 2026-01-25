@@ -42,3 +42,11 @@ def article_delete(request, pk):
         article.delete()
         return redirect('article_list')
     return render(request, 'bookshelf/article_confirm_delete.html', {'article': article})
+
+@permission_required('bookshelf.can_view', raise_exception=True)
+def book_list(request):
+    """
+    Displays a list of all books (or articles) that the user has permission to view.
+    """
+    books = Article.objects.all()  # Replace Article with Book if needed
+    return render(request, 'bookshelf/book_list.html', {'books': books})
