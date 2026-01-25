@@ -33,6 +33,37 @@ AUTH_USER_MODEL = 'bookshelf.CustomUser'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+SECURE_SSL_REDIRECT = True
+
+# HTTP Strict Transport Security (HSTS)
+# Instructs browsers to only use HTTPS for 1 year (31536000 seconds)
+SECURE_HSTS_SECONDS = 31536000
+
+# Apply HSTS to all subdomains
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# Allow domain to be included in browser HSTS preload lists
+SECURE_HSTS_PRELOAD = True
+
+# ==============================
+# SECURE COOKIES
+# ==============================
+
+# Session cookies only sent over HTTPS
+SESSION_COOKIE_SECURE = True
+
+# Prevent clickjacking attacks
+X_FRAME_OPTIONS = 'DENY'
+
+# Prevent MIME-type sniffing
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Enable browser XSS protection
+SECURE_BROWSER_XSS_FILTER = True
+# CSRF cookies only sent over HTTPS
+CSRF_COOKIE_SECURE = True
+
+
 # Browser security protections
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
