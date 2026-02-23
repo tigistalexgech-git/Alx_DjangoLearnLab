@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post
 from django.db.models import Q
 from django.urls import reverse_lazy
+from django.contrib.auth.forms import UserChangeForm
 
 def register(request):
     if request.method == 'POST':
@@ -22,7 +23,15 @@ def register(request):
 @login_required
 
 def profile(request):
-    return render(request, 'blog/profile.html')
+    if request.method == 'POST':
+        form = UserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = UserChangeForm(instance=request.user)
+
+    return render(request, 'blog/profile.html', {'form': form})
 
 def search(request):
     query = request.GET.get('q')
@@ -51,16 +60,15 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     fields = ['title', 'content']
-    template_name = 'blog/post_form.html'
 
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
-    
+
+
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
-    template_name = 'blog/post_confirm_delete.html'
-    success_url = reverse_lazy('post-list')
+    success_url = '/'
 
     def test_func(self):
         post = self.get_object()
