@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserChangeForm
+from .forms import CommentForm
 
 def register(request):
     if request.method == 'POST':
@@ -84,6 +85,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 class CommentCreateView(CreateView):
     model = Comment
     fields = ['author', 'content']
+    form_class = CommentForm
     template_name = 'comment_form.html'
 
     def form_valid(self, form):
