@@ -16,6 +16,10 @@
     {% empty %}
         <li>No posts available.</li>
     {% endfor %}
+    <form method="get">
+    <input type="text" name="q" placeholder="Search posts...">
+    <button type="submit">Search</button>
+</form>
 </ul>
 </body>
 </html>

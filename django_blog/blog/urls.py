@@ -5,6 +5,7 @@ from .views import (
     CommentCreateView,
     CommentUpdateView,
     CommentDeleteView,
+    PostSearchView,
 )
 
 uurlpatterns = [
@@ -27,4 +28,5 @@ uurlpatterns = [
 
     # delete a comment
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
+    path('search/', PostSearchView.as_view(), name='post_search'),
 ]
