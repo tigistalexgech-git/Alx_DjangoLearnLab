@@ -1,17 +1,18 @@
 from django.shortcuts import render
-from rest_framework import viewsets, permissions
+from rest_framework import generics,viewsets, permissions
 from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-@api_view(['GET'])
-def feed(request):
-    posts = Post.objects.filter(
-        author__in=request.user.following.all()
-    ).order_by('-created_at')
-    serializer = PostSerializer(posts, many=True)
-    return Response(serializer.data)
+class FeedView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        following_users = request.user.following.all()
+        posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
 
 @api_view(['POST'])
 def like_post(request, pk):
