@@ -4,6 +4,7 @@ from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from notifications.models import Notification
 
 class FeedView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -14,17 +15,34 @@ class FeedView(generics.GenericAPIView):
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
-@api_view(['POST'])
-def like_post(request, pk):
-    post = Post.objects.get(pk=pk)
-    Like.objects.get_or_create(post=post, user=request.user)
-    return Response({"message": "Liked"})
+class LikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
 
-@api_view(['POST'])
-def unlike_post(request, pk):
-    post = Post.objects.get(pk=pk)
-    Like.objects.filter(post=post, user=request.user).delete()
-    return Response({"message": "Unliked"})
+    def post(self, request, pk):
+        post = generics.get_object_or_404(Post, pk=pk)
+
+        Like.objects.get_or_create(user=request.user, post=post)
+
+        Notification.objects.create(
+            recipient=post.author,
+            actor=request.user,
+            verb="liked your post",
+            content_type=None,
+            object_id=post.id
+        )
+
+        return Response({"message": "Post liked"})
+
+
+class UnlikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = generics.get_object_or_404(Post, pk=pk)
+
+        Like.objects.filter(user=request.user, post=post).delete()
+
+        return Response({"message": "Post unliked"})
 
 class IsOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
