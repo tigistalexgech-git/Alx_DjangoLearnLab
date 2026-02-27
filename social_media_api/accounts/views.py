@@ -10,20 +10,26 @@ from rest_framework.response import Response
 
 from .serializers import RegisterSerializer
 
-User = get_user_model()
+CustomUser = get_user_model()
 
-@api_view(['POST'])
-def follow_user(request, user_id):
-    user_to_follow = User.objects.get(id=user_id)
-    request.user.following.add(user_to_follow)
-    return Response({"message": "Followed"})
+class FollowUserView(generics.GenericAPIView):
+    queryset = CustomUser.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
 
-@api_view(['POST'])
-def unfollow_user(request, user_id):
-    user_to_unfollow = User.objects.get(id=user_id)
-    request.user.following.remove(user_to_unfollow)
-    return Response({"message": "Unfollowed"})
+    def post(self, request, user_id):
+        user_to_follow = self.get_queryset().get(id=user_id)
+        request.user.following.add(user_to_follow)
+        return Response({"message": "Followed successfully"})
 
+
+class UnfollowUserView(generics.GenericAPIView):
+    queryset = CustomUser.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, user_id):
+        user_to_unfollow = self.get_queryset().get(id=user_id)
+        request.user.following.remove(user_to_unfollow)
+        return Response({"message": "Unfollowed successfully"})
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
